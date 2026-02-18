@@ -1,0 +1,9 @@
+.git
+.github
+.agents
+.claude
+.cursor
+docker-compose.yml
+README.md
+opencode.json
+docs
