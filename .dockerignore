@@ -4,6 +4,5 @@
 .claude
 .cursor
 docker-compose.yml
-README.md
 opencode.json
 docs
