@@ -1,6 +1,6 @@
 # PrestaShop on Railway
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/template/prestashop)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/prestashop)
 
 One-click deployment of [PrestaShop 9](https://www.prestashop-project.org/) on [Railway](https://railway.com).
 
