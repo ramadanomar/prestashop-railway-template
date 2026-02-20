@@ -29,6 +29,16 @@ if [ -f /var/www/html/install.lock ] && [ ! -f /var/www/html/config/settings.inc
     rm -f /var/www/html/install.lock
 fi
 
+# --- Remove leftover install folder ---
+# The installer may exit non-zero (set -e kills the script) before it can rm the
+# install folder. If PS is already installed, the install folder must not exist
+# or the back office shows a security warning.
+PS_FOLDER_INSTALL="${PS_FOLDER_INSTALL:-install}"
+if [ -d "/var/www/html/$PS_FOLDER_INSTALL" ] && { [ -f /var/www/html/config/settings.inc.php ] || [ -f /var/www/html/app/config/parameters.php ]; }; then
+    echo "* [Railway] Removing leftover install folder ($PS_FOLDER_INSTALL)"
+    rm -rf "/var/www/html/$PS_FOLDER_INSTALL"
+fi
+
 # --- Normalize admin folder name ---
 # The PrestaShop CLI installer renames admin/ to admin<random> for security.
 # For a Railway template with predictable URLs, we rename it back to PS_FOLDER_ADMIN.
