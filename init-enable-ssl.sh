@@ -53,6 +53,6 @@ fi
 # Revert DirectoryIndex to the default (remove docker_updt_ps_domains.php reference)
 APACHE_CONF="${APACHE_CONFDIR:-/etc/apache2}/conf-available/docker-php.conf"
 if [ -f "$APACHE_CONF" ] && grep -q "docker_updt_ps_domains.php" "$APACHE_CONF" 2>/dev/null; then
-    sed -i 's/DirectoryIndex docker_updt_ps_domains.php //g' "$APACHE_CONF"
+    sed -i 's/docker_updt_ps_domains\.php //g' "$APACHE_CONF"
     echo "* [Railway] Reverted DirectoryIndex to default"
 fi
