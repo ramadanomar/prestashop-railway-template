@@ -6,6 +6,10 @@ PrestaShop is a free, open-source e-commerce platform powering over 300,000 onli
 
 Hosting PrestaShop requires a PHP-enabled web server (Apache or Nginx), a MySQL or MariaDB database, persistent file storage for product images, themes, and modules, and SSL certificates for secure checkout. The initial installation involves running a CLI or web-based installer, configuring database credentials, and setting up URL rewriting. This template automates the entire process — database provisioning, SSL termination, file persistence, and auto-installation — so your store is live in minutes with zero server configuration.
 
+## First Deploy
+
+After deploying this template, PrestaShop will automatically install itself on first boot. This process takes approximately 5 minutes while it sets up the database, installs modules, and configures the storefront. During this time the service will show a 502 Bad Gateway error — this is normal. Once the installation completes, your store and admin panel will be fully accessible.
+
 ## Common Use Cases
 
 - Launch a fully customizable online store with product catalog, cart, and checkout
