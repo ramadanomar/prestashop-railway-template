@@ -3,12 +3,15 @@
 #
 # This runs immediately after the PS CLI installer completes (via docker_run.sh's
 # post-install-scripts support). The installer renames admin/ to admin<random> for
-# security. We rename it back to PS_FOLDER_ADMIN for predictable template URLs.
+# security. We rename it to RAILWAY_ADMIN_PATH for predictable template URLs.
 #
-# Users who want security-through-obscurity can change PS_FOLDER_ADMIN to a custom
-# value — this script will normalize to whatever that variable is set to.
+# IMPORTANT: We use RAILWAY_ADMIN_PATH (not PS_FOLDER_ADMIN) because PS_FOLDER_ADMIN
+# must stay as "admin" to prevent docker_run.sh from renaming admin/ BEFORE the
+# installer runs — which crashes the PS9 installer.
+#
+# Users who want a custom admin URL can change RAILWAY_ADMIN_PATH to any value.
 
-EXPECTED_ADMIN="${PS_FOLDER_ADMIN:-admin}"
+EXPECTED_ADMIN="${RAILWAY_ADMIN_PATH:-admin-railway}"
 
 if [ -d "/var/www/html/$EXPECTED_ADMIN" ]; then
     echo "* [Railway] Admin folder already at expected name: $EXPECTED_ADMIN"

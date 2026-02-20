@@ -5,7 +5,7 @@ set -e
 #
 # This script wraps the official PrestaShop Docker entrypoint to add:
 # 1. Volume cleanup: removes ext4 lost+found and stale install locks
-# 2. Admin folder normalization: renames random admin dir back to PS_FOLDER_ADMIN
+# 2. Admin folder normalization: renames random admin dir to RAILWAY_ADMIN_PATH
 # 3. Apache MPM fix: ensures only mpm_prefork is loaded (required for mod_php)
 # 4. Version tracking: records the installed PS version in .ps-version
 # 5. Upgrade detection: force-copies new core files when the image version changes
@@ -39,20 +39,13 @@ if [ -d "/var/www/html/$PS_FOLDER_INSTALL" ] && { [ -f /var/www/html/config/sett
     rm -rf "/var/www/html/$PS_FOLDER_INSTALL"
 fi
 
-# --- Prevent docker_run.sh mv conflict ---
-# docker_run.sh does: mv /var/www/html/admin /var/www/html/$PS_FOLDER_ADMIN/
-# On restarts, cp -n recreates admin/ from the image, but the target (admin-railway)
-# already exists from a previous boot. Remove the stale admin/ so the mv won't fail.
-EXPECTED_ADMIN="${PS_FOLDER_ADMIN:-admin}"
-if [ "$EXPECTED_ADMIN" != "admin" ] && [ -d "/var/www/html/$EXPECTED_ADMIN" ] && [ -d "/var/www/html/admin" ]; then
-    echo "* [Railway] Removing stale admin/ (target $EXPECTED_ADMIN already exists)"
-    rm -rf /var/www/html/admin
-fi
-
 # --- Normalize admin folder name ---
 # The PrestaShop CLI installer renames admin/ to admin<random> for security.
-# For a Railway template with predictable URLs, we rename it back to PS_FOLDER_ADMIN.
+# For a Railway template with predictable URLs, we rename it to RAILWAY_ADMIN_PATH.
+# We use RAILWAY_ADMIN_PATH (not PS_FOLDER_ADMIN) because PS_FOLDER_ADMIN must stay
+# as "admin" so docker_run.sh doesn't rename admin/ before the installer runs.
 # This runs on every startup to catch both existing installs and post-restart states.
+EXPECTED_ADMIN="${RAILWAY_ADMIN_PATH:-admin-railway}"
 if [ ! -d "/var/www/html/$EXPECTED_ADMIN" ]; then
     # Find the randomized admin directory (admin + random chars, excluding admin-api)
     ACTUAL_ADMIN=""
