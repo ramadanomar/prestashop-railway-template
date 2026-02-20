@@ -6,9 +6,9 @@ One-click deployment of [PrestaShop](https://www.prestashop-project.org/) on [Ra
 
 ## What's Included
 
-- **PrestaShop 8.x** (latest stable) with Apache
-- **MariaDB 10.11** (LTS) for the database
-- **Persistent storage** via Railway volumes for both app files and database
+- **PrestaShop 9.x** (latest stable, currently 9.0.3) with PHP 8.4 and Apache
+- **MySQL** via Railway's built-in database service
+- **Persistent storage** via Railway volumes for app files (database persistence handled by Railway)
 - **Auto-installation** with demo data on first deploy
 - **SSL/HTTPS** handled automatically by Railway's edge proxy
 - **Dynamic domain support** -- works with Railway domains and custom domains
@@ -60,8 +60,8 @@ The default admin email is `admin@example.com` (configurable via `ADMIN_MAIL`).
 | `PS_DOMAIN` | Set from Railway's public domain |
 | `PS_HANDLE_DYNAMIC_DOMAIN` | Enables automatic domain migration |
 | `PS_ENABLE_SSL` | Enables HTTPS URL generation |
-| `DB_SERVER` | MariaDB connection via Railway private network |
-| `DB_USER` / `DB_PASSWD` | Database credentials (auto-wired) |
+| `DB_SERVER` | MySQL connection via Railway private network |
+| `DB_USER` / `DB_PASSWD` | Database credentials (auto-wired from MySQL service) |
 | `ADMIN_PASSWD` | Auto-generated admin password |
 
 ## Custom Domain
@@ -79,15 +79,15 @@ No need to manually update `PS_DOMAIN` -- the dynamic domain handler updates the
 
 This template deploys two services:
 
-- **PrestaShop** -- Custom Dockerfile based on the official `prestashop/prestashop:8-apache` image with a Railway-aware entrypoint wrapper. Volume mounted at `/var/www/html` for persistent storage of modules, themes, uploads, and configuration.
+- **PrestaShop** -- Custom Dockerfile based on the official `prestashop/prestashop:9-apache` image with a Railway-aware entrypoint wrapper. Volume mounted at `/var/www/html` for persistent storage of modules, themes, uploads, and configuration.
 
-- **MariaDB 10.11** -- Official `mariadb:10.11` Docker image. Volume mounted at `/var/lib/mysql` for database persistence.
+- **MySQL** -- Railway's built-in MySQL database service. Persistence and backups handled automatically by Railway.
 
 Services communicate over Railway's private network (`*.railway.internal`), with only PrestaShop exposed publicly.
 
 ## Upgrading
 
-When the template image is updated (e.g., PrestaShop 8.1 to 8.2), the Railway-aware entrypoint automatically:
+When the template image is updated (e.g., PrestaShop 9.0.3 to 9.0.4), the Railway-aware entrypoint automatically:
 
 1. Detects the version change via a `.ps-version` tracking file
 2. Force-copies updated core files from the new image into the volume
@@ -111,4 +111,4 @@ If you see redirect issues after changing domains, the dynamic domain handler sh
 
 ### Database connection errors
 
-The PrestaShop entrypoint automatically waits for MariaDB to be ready. If errors persist, check that the MariaDB service is running in your Railway dashboard.
+The PrestaShop entrypoint automatically waits for MySQL to be ready. If errors persist, check that the MySQL service is running in your Railway dashboard.
