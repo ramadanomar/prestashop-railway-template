@@ -17,11 +17,12 @@ RUN mkdir -p /tmp/post-install-scripts
 COPY post-install-normalize-admin.sh /tmp/post-install-scripts/normalize-admin.sh
 RUN chmod +x /tmp/post-install-scripts/normalize-admin.sh
 
-# Init script: ensures SSL flags are set in the database on every startup.
-# docker_run.sh runs scripts from this directory just before Apache starts.
+# Init scripts: run on every startup just before Apache starts.
+# docker_run.sh runs all scripts in /tmp/init-scripts/ automatically.
 RUN mkdir -p /tmp/init-scripts
 COPY init-enable-ssl.sh /tmp/init-scripts/enable-ssl.sh
-RUN chmod +x /tmp/init-scripts/enable-ssl.sh
+COPY init-normalize-admin.sh /tmp/init-scripts/normalize-admin.sh
+RUN chmod +x /tmp/init-scripts/enable-ssl.sh /tmp/init-scripts/normalize-admin.sh
 
 EXPOSE 80
 
