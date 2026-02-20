@@ -39,11 +39,20 @@ if [ -d "/var/www/html/$PS_FOLDER_INSTALL" ] && { [ -f /var/www/html/config/sett
     rm -rf "/var/www/html/$PS_FOLDER_INSTALL"
 fi
 
+# --- Prevent docker_run.sh mv conflict ---
+# docker_run.sh does: mv /var/www/html/admin /var/www/html/$PS_FOLDER_ADMIN/
+# On restarts, cp -n recreates admin/ from the image, but the target (admin-railway)
+# already exists from a previous boot. Remove the stale admin/ so the mv won't fail.
+EXPECTED_ADMIN="${PS_FOLDER_ADMIN:-admin}"
+if [ "$EXPECTED_ADMIN" != "admin" ] && [ -d "/var/www/html/$EXPECTED_ADMIN" ] && [ -d "/var/www/html/admin" ]; then
+    echo "* [Railway] Removing stale admin/ (target $EXPECTED_ADMIN already exists)"
+    rm -rf /var/www/html/admin
+fi
+
 # --- Normalize admin folder name ---
 # The PrestaShop CLI installer renames admin/ to admin<random> for security.
 # For a Railway template with predictable URLs, we rename it back to PS_FOLDER_ADMIN.
 # This runs on every startup to catch both existing installs and post-restart states.
-EXPECTED_ADMIN="${PS_FOLDER_ADMIN:-admin}"
 if [ ! -d "/var/www/html/$EXPECTED_ADMIN" ]; then
     # Find the randomized admin directory (admin + random chars, excluding admin-api)
     ACTUAL_ADMIN=""
